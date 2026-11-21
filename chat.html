@@ -1,1 +1,94 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090d">
+
+  <title>NEXAR AI - Chat</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+
+  <div class="ai-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="ai-sidebar">
+
+      <a href="index.html" class="logo">
+        <span>∞</span> NEXAR AI
+      </a>
+
+      <button id="new-chat" class="sidebar-new-chat" type="button">
+        + New Chat
+      </button>
+
+      <h3>RECENT CHATS</h3>
+
+      <div id="history-list"></div>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-profile">
+          <div class="profile-icon">N</div>
+          <div>
+            <strong>NEXAR AI</strong>
+            <small>AI Workspace</small>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- CHAT AREA -->
+    <main class="ai-main">
+
+      <div class="ai-topbar">
+        <a href="index.html">← Home</a>
+        <span class="online-status">● ONLINE</span>
+      </div>
+
+      <div class="chat-box">
+
+        <div class="chat-heading">
+          <span class="status-dot"></span>
+          NEXAR AI
+          <span class="demo-label">AI ASSISTANT</span>
+        </div>
+
+        <div id="chat-messages" class="chat-messages">
+          <div class="message assistant">
+            Hello! Welcome to NEXAR AI. What would you like to explore?
+          </div>
+        </div>
+
+        <form id="chat-form" class="chat-form">
+
+          <input
+            id="chat-input"
+            type="text"
+            placeholder="Message NEXAR AI..."
+            autocomplete="off"
+            required
+          >
+
+          <button type="submit">Send ↗</button>
+
+        </form>
+
+        <p class="demo-note">
+          NEXAR AI can make mistakes. Check important information.
+        </p>
+
+      </div>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
+
