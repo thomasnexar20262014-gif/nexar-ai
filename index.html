@@ -1,59 +1,235 @@
 
-<section class="section workspace" id="workspace">
-  <div class="ai-layout">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090d">
+  <title>NEXAR AI - Your Intelligent AI Assistant</title>
+  <meta name="description" content="Discover NEXAR AI, your intelligent AI assistant and workspace.">
 
-    <aside class="ai-sidebar">
-      <a href="#" class="logo"><span>∞</span> NEXAR AI</a>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
 
-      <button id="new-chat" class="sidebar-new-chat">
-        + New Chat
-      </button>
+<body>
 
-      <h3>RECENT CHATS</h3>
-      <div id="history-list"></div>
+  <!-- NAVIGATION -->
+  <header class="navbar">
+    <a href="#" class="logo"><span>∞</span> NEXAR AI</a>
 
-      <div class="sidebar-bottom">
-        <div class="sidebar-profile">
-          <div class="profile-icon">N</div>
-          <div>
-            <strong>NEXAR AI</strong>
-            <small>AI Workspace</small>
-          </div>
-        </div>
-      </div>
-    </aside>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#workspace">AI Workspace</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
 
-    <div class="ai-main">
-      <div class="ai-topbar">
-        <span>∞ NEXAR AI</span>
-        <span class="online-status">● ONLINE</span>
-      </div>
+    <a href="#workspace" class="nav-button">Try NEXAR AI ↗</a>
+  </header>
 
-      <div class="chat-box">
-        <div class="chat-heading">
-          <span class="status-dot"></span>
-          NEXAR AI
-          <span class="demo-label">AI ASSISTANT</span>
-        </div>
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="glow"></div>
 
-        <div id="chat-messages" class="chat-messages">
-          <div class="message assistant">
-            Hello! Welcome to NEXAR AI. What would you like to explore?
-          </div>
-        </div>
+    <p class="eyebrow">THE FUTURE OF INTELLIGENCE</p>
 
-        <form id="chat-form" class="chat-form">
-          <input id="chat-input" type="text"
-            placeholder="Message NEXAR AI..."
-            autocomplete="off">
-          <button type="submit">Send ↗</button>
-        </form>
+    <h1>
+      THINK BIGGER.<br>
+      <span>CREATE SMARTER.</span>
+    </h1>
 
-        <p class="demo-note">
-          NEXAR AI can make mistakes. Check important information.
-        </p>
-      </div>
+    <p class="hero-text">
+      Meet NEXAR AI — your intelligent assistant for ideas,
+      creativity, productivity and exploration.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#workspace" class="primary-button">Start Chatting ↗</a>
+      <a href="#features" class="secondary-button">Explore Features</a>
     </div>
 
-  </div>
-</section>
+    <div class="hero-symbol">∞</div>
+    <p class="hero-footer">INTELLIGENCE WITHOUT LIMITS</p>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <p class="eyebrow">WHAT WE OFFER</p>
+    <h2>Explore NEXAR AI</h2>
+
+    <p class="section-intro">
+      A smarter way to explore ideas, ask questions and get things done.
+    </p>
+
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <span>✦</span>
+        <h3>AI CONVERSATION</h3>
+        <p>Ask questions and explore ideas with your AI assistant.</p>
+      </div>
+
+      <div class="feature-card">
+        <span>⌘</span>
+        <h3>SMART ASSISTANCE</h3>
+        <p>Get help with learning, writing, brainstorming and everyday tasks.</p>
+      </div>
+
+      <div class="feature-card">
+        <span>⚡</span>
+        <h3>FAST RESPONSES</h3>
+        <p>Get AI-generated responses through your connected AI service.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- AI WORKSPACE -->
+  <section class="section workspace" id="workspace">
+
+    <p class="eyebrow">YOUR AI WORKSPACE</p>
+    <h2>Meet Your Assistant</h2>
+
+    <p class="section-intro">
+      Start a conversation with NEXAR AI.
+    </p>
+
+    <div class="ai-layout">
+
+      <!-- LEFT SIDEBAR -->
+      <aside class="ai-sidebar">
+
+        <a href="#home" class="logo">
+          <span>∞</span> NEXAR AI
+        </a>
+
+        <button id="new-chat" class="sidebar-new-chat" type="button">
+          + New Chat
+        </button>
+
+        <h3>RECENT CHATS</h3>
+
+        <div id="history-list"></div>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-profile">
+            <div class="profile-icon">N</div>
+
+            <div>
+              <strong>NEXAR AI</strong>
+              <small>AI Workspace</small>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- MAIN CHAT -->
+      <div class="ai-main">
+
+        <div class="ai-topbar">
+          <span>∞ NEXAR AI</span>
+          <span class="online-status">● ONLINE</span>
+        </div>
+
+        <div class="chat-box">
+
+          <div class="chat-heading">
+            <span class="status-dot"></span>
+            NEXAR AI
+            <span class="demo-label">AI ASSISTANT</span>
+          </div>
+
+          <div id="chat-messages" class="chat-messages">
+            <div class="message assistant">
+              Hello! Welcome to NEXAR AI. What would you like to explore?
+            </div>
+          </div>
+
+          <form id="chat-form" class="chat-form">
+
+            <input
+              id="chat-input"
+              type="text"
+              placeholder="Message NEXAR AI..."
+              autocomplete="off"
+              required
+            >
+
+            <button type="submit">Send ↗</button>
+
+          </form>
+
+          <p class="demo-note">
+            NEXAR AI can make mistakes. Check important information.
+          </p>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section" id="pricing">
+
+    <p class="eyebrow">SIMPLE PRICING</p>
+    <h2>Choose Your Experience</h2>
+
+    <p class="section-intro">
+      Start exploring NEXAR AI with our available plans.
+    </p>
+
+    <div class="pricing-grid">
+
+      <div class="price-card">
+        <h3>FREE PLAN</h3>
+
+        <div class="price">
+          ₹0 <span>/ forever</span>
+        </div>
+
+        <p>Start your AI journey.</p>
+
+        <ul>
+          <li>AI conversations</li>
+          <li>Basic AI assistance</li>
+          <li>Chat history in this browser</li>
+          <li>Free access to the platform</li>
+        </ul>
+
+        <a href="#workspace" class="primary-button">Get Started</a>
+      </div>
+
+      <div class="price-card featured">
+        <h3>PREMIUM PLAN</h3>
+
+        <div class="price">
+          Coming Soon
+        </div>
+
+        <p>More possibilities for the future.</p>
+
+        <ul>
+          <li>Planned advanced AI features</li>
+          <li>Planned premium tools</li>
+          <li>Enhanced workspace</li>
+          <li>More features coming soon</li>
+        </ul>
+
+        <a href="#workspace" class="secondary-button">Explore NEXAR AI</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="#home" class="logo"><span>∞</span> NEXAR AI</a>
+
+    <p>© 2026 NEXAR AI. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
