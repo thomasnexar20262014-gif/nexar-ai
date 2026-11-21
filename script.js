@@ -1,17 +1,9 @@
 
+const API_URL = "https://nexar-ai-backend.thomasnexar2026-2014.workers.dev/";
+
 const chatForm = document.getElementById("chat-form");
 const chatInput = document.getElementById("chat-input");
 const chatMessages = document.getElementById("chat-messages");
-
-const demoReplies = [
-  "Welcome to NEXAR AI! I'm your demo assistant.",
-  "That's an interesting question! A real AI connection is coming soon.",
-  "Let's turn your idea into something amazing with NEXAR AI.",
-  "NEXAR AI is being built to help with creativity, learning and productivity.",
-  "Think beyond limits. What else would you like to explore?"
-];
-
-let replyIndex = 0;
 
 function addMessage(text, sender) {
   const message = document.createElement("div");
@@ -21,22 +13,59 @@ function addMessage(text, sender) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-chatForm.addEventListener("submit", function(event) {
+chatForm.addEventListener("submit", async function(event) {
   event.preventDefault();
 
   const userText = chatInput.value.trim();
 
-  if (!userText) {
-    return;
-  }
+  if (!userText) return;
 
   addMessage(userText, "user");
   chatInput.value = "";
+  chatInput.disabled = true;
 
-  setTimeout(function() {
-    const reply = demoReplies[replyIndex];
-    addMessage(reply, "assistant");
+  const sendButton = chatForm.querySelector("button");
+  sendButton.disabled = true;
+  sendButton.textContent = "Thinking...";
 
-    replyIndex = (replyIndex + 1) % demoReplies.length;
-  }, 600);
+  const loadingMessage = document.createElement("div");
+  loadingMessage.className = "message assistant";
+  loadingMessage.textContent = "NEXAR AI is thinking...";
+  chatMessages.appendChild(loadingMessage);
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: userText
+      })
+    });
+
+    const data = await response.json();
+    loadingMessage.remove();
+
+    if (!response.ok) {
+      throw new Error(data.error || "AI service error");
+    }
+
+    addMessage(data.reply, "assistant");
+
+  } catch (error) {
+    loadingMessage.remove();
+
+    addMessage(
+      "Sorry! I couldn't connect to NEXAR AI. Please try again. (" +
+      error.message + ")",
+      "assistant"
+    );
+
+  } finally {
+    chatInput.disabled = false;
+    sendButton.disabled = false;
+    sendButton.textContent = "Send ↗";
+    chatInput.focus();
+  }
 });
