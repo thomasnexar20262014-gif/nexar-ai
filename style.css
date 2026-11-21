@@ -417,3 +417,30 @@ footer p {
     text-align: center;
   }
 }
+.chat-history {
+  background: #111827;
+  border: 1px solid #263449;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.chat-history h3 {
+  color: #ffffff;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+#new-chat {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#history-list {
+  margin-top: 15px;
+  color: #cbd5e1;
+}
