@@ -1,20 +1,47 @@
 
+/* =====================================
+   NEXAR AI — PREMIUM DESIGN SYSTEM
+===================================== */
+
+:root {
+  --bg: #08090d;
+  --panel: #10151e;
+  --panel-light: #171e29;
+  --border: #252e3b;
+  --text: #f5f7fb;
+  --muted: #9ba8b8;
+  --green: #42f5a1;
+  --green-light: #8bffc2;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
-  background: #08090d;
-  color: #f5f7fb;
+  background: var(--bg);
+  color: var(--text);
   font-family: Inter, Arial, sans-serif;
   line-height: 1.6;
 }
 
-a { color: inherit; text-decoration: none; }
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+/* NAVIGATION */
 
 .navbar {
   height: 72px;
@@ -37,7 +64,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .logo span {
-  color: #42f5a1;
+  color: var(--green);
   font-size: 32px;
   vertical-align: middle;
 }
@@ -45,14 +72,21 @@ a { color: inherit; text-decoration: none; }
 nav {
   display: flex;
   gap: 28px;
-  color: #aab2c0;
+  color: var(--muted);
   font-size: 14px;
 }
 
-nav a:hover { color: #42f5a1; }
+nav a {
+  transition: .2s;
+}
 
-.nav-button, .primary-button {
-  background: #42f5a1;
+nav a:hover {
+  color: var(--green);
+}
+
+.nav-button,
+.primary-button {
+  background: var(--green);
   color: #06120b;
   padding: 11px 21px;
   border-radius: 9px;
@@ -61,10 +95,13 @@ nav a:hover { color: #42f5a1; }
   transition: .25s;
 }
 
-.nav-button:hover, .primary-button:hover {
-  background: #8bffc2;
+.nav-button:hover,
+.primary-button:hover {
+  background: var(--green-light);
   transform: translateY(-2px);
 }
+
+/* HERO */
 
 .hero {
   min-height: 590px;
@@ -72,13 +109,17 @@ nav a:hover { color: #42f5a1; }
   text-align: center;
   position: relative;
   overflow: hidden;
-  background: radial-gradient(ellipse at 50% 45%, #142a25, #08090d 68%);
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    #142a25,
+    var(--bg) 68%
+  );
 }
 
 .glow {
   width: 350px;
   height: 350px;
-  background: #42f5a1;
+  background: var(--green);
   filter: blur(160px);
   opacity: .13;
   position: absolute;
@@ -88,7 +129,7 @@ nav a:hover { color: #42f5a1; }
 }
 
 .eyebrow {
-  color: #42f5a1;
+  color: var(--green);
   letter-spacing: 4px;
   font-size: 11px;
   font-weight: bold;
@@ -102,10 +143,13 @@ nav a:hover { color: #42f5a1; }
   position: relative;
 }
 
-.hero h1 span { color: #42f5a1; }
+.hero h1 span {
+  color: var(--green);
+}
 
-.hero-text, .section-intro {
-  color: #aab2c0;
+.hero-text,
+.section-intro {
+  color: var(--muted);
   max-width: 620px;
   margin: 24px auto;
   font-size: 16px;
@@ -125,15 +169,16 @@ nav a:hover { color: #42f5a1; }
   padding: 11px 21px;
   border-radius: 9px;
   display: inline-block;
+  transition: .25s;
 }
 
 .secondary-button:hover {
-  border-color: #42f5a1;
-  color: #42f5a1;
+  border-color: var(--green);
+  color: var(--green);
 }
 
 .hero-symbol {
-  color: #42f5a1;
+  color: var(--green);
   font-size: 110px;
   margin-top: 35px;
   opacity: .7;
@@ -148,9 +193,16 @@ nav a:hover { color: #42f5a1; }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-14px);
+  }
 }
+
+/* GENERAL SECTIONS */
 
 .section {
   padding: 85px 8%;
@@ -161,6 +213,8 @@ nav a:hover { color: #42f5a1; }
   font-size: clamp(30px, 5vw, 46px);
   margin-bottom: 10px;
 }
+
+/* FEATURES */
 
 .feature-grid {
   display: grid;
@@ -180,11 +234,12 @@ nav a:hover { color: #42f5a1; }
 
 .feature-card:hover {
   transform: translateY(-6px);
-  border-color: #42f5a1;
+  border-color: var(--green);
+  box-shadow: 0 12px 35px #42f5a110;
 }
 
 .feature-card span {
-  color: #42f5a1;
+  color: var(--green);
   font-size: 30px;
 }
 
@@ -193,63 +248,178 @@ nav a:hover { color: #42f5a1; }
   letter-spacing: 1px;
 }
 
-.feature-card p, .price-card p {
-  color: #aab2c0;
+.feature-card p,
+.price-card p {
+  color: var(--muted);
   font-size: 14px;
 }
 
-.workspace { background: #0b0e14; }
+/* WORKSPACE */
 
-.chat-history {
-  max-width: 900px;
-  margin: 35px auto 15px;
-  padding: 20px;
-  background: #11151e;
-  border: 1px solid #282e3a;
-  border-radius: 14px;
-  text-align: left;
+.workspace {
+  background: #0b0e14;
 }
 
-.chat-history h3 {
-  color: #42f5a1;
-  font-size: 13px;
+.ai-layout {
+  display: flex;
+  max-width: 1450px;
+  min-height: 680px;
+  margin: 35px auto;
+  background: #090d13;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 20px 70px #0005;
+}
+
+/* LEFT SIDEBAR */
+
+.ai-sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: #10151e;
+  border-right: 1px solid var(--border);
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-sidebar .logo {
+  margin-bottom: 28px;
+  font-size: 19px;
+}
+
+.sidebar-new-chat {
+  width: 100%;
+  padding: 13px;
+  background: var(--green);
+  color: #06120b;
+  border: none;
+  border-radius: 9px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 30px;
+  transition: .2s;
+}
+
+.sidebar-new-chat:hover {
+  background: var(--green-light);
+  transform: translateY(-2px);
+}
+
+.ai-sidebar h3 {
+  color: #788697;
+  font-size: 11px;
   letter-spacing: 2px;
   margin-bottom: 12px;
 }
 
-#new-chat {
-  background: #42f5a1;
-  color: #06120b;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
+.ai-sidebar #history-list {
+  overflow-y: auto;
+  max-height: 350px;
 }
 
-#history-list { margin-top: 12px; }
+.ai-sidebar .history-item {
+  width: 100%;
+  padding: 11px;
+  margin-bottom: 8px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
 
 .history-item {
   background: #1a202b;
   color: #e7edf5;
   border: 1px solid #303847;
   border-radius: 8px;
+  transition: .2s;
 }
 
 .history-item:hover {
-  border-color: #42f5a1;
-  color: #42f5a1;
+  border-color: var(--green);
+  color: var(--green);
 }
 
-.chat-box {
-  max-width: 900px;
-  margin: 20px auto 0;
-  border: 1px solid #2b3442;
-  background: #11151e;
-  border-radius: 16px;
-  overflow: hidden;
-  text-align: left;
-  box-shadow: 0 15px 55px #0005;
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 25px;
+}
+
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #1a202b;
+  border-radius: 10px;
+}
+
+.profile-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--green);
+  color: #06120b;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.sidebar-profile strong,
+.sidebar-profile small {
+  display: block;
+}
+
+.sidebar-profile small {
+  color: #82909e;
+  font-size: 11px;
+}
+
+/* MAIN CHAT AREA */
+
+.ai-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: #090d13;
+}
+
+.ai-topbar {
+  height: 65px;
+  min-height: 65px;
+  padding: 0 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  font-weight: bold;
+}
+
+.online-status {
+  color: var(--green);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+/* CHAT BOX */
+
+.ai-main .chat-box {
+  width: 100%;
+  max-width: none;
+  flex: 1;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  background: #090d13;
 }
 
 .chat-heading {
@@ -262,22 +432,23 @@ nav a:hover { color: #42f5a1; }
   width: 9px;
   height: 9px;
   display: inline-block;
-  background: #42f5a1;
+  background: var(--green);
   border-radius: 50%;
   margin-right: 8px;
-  box-shadow: 0 0 10px #42f5a1;
+  box-shadow: 0 0 10px var(--green);
 }
 
 .demo-label {
   float: right;
-  color: #42f5a1;
+  color: var(--green);
   font-size: 10px;
   letter-spacing: 2px;
 }
 
-.chat-messages {
-  min-height: 250px;
-  max-height: 450px;
+.ai-main .chat-messages {
+  flex: 1;
+  min-height: 400px;
+  max-height: none;
   overflow-y: auto;
   padding: 24px;
 }
@@ -289,6 +460,7 @@ nav a:hover { color: #42f5a1; }
   max-width: 85%;
   font-size: 14px;
   overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .assistant {
@@ -301,6 +473,8 @@ nav a:hover { color: #42f5a1; }
   border: 1px solid #276c4a;
   margin-left: auto;
 }
+
+/* CHAT INPUT */
 
 .chat-form {
   display: flex;
@@ -320,19 +494,29 @@ nav a:hover { color: #42f5a1; }
   outline: none;
 }
 
-.chat-form input:focus { border-color: #42f5a1; }
+.chat-form input:focus {
+  border-color: var(--green);
+}
 
 .chat-form button {
   padding: 12px 21px;
-  background: #42f5a1;
+  background: var(--green);
   color: #06120b;
   border: 0;
   border-radius: 9px;
   font-weight: bold;
   cursor: pointer;
+  transition: .2s;
 }
 
-.chat-form button:disabled { opacity: .6; cursor: wait; }
+.chat-form button:hover {
+  background: var(--green-light);
+}
+
+.chat-form button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
 
 .demo-note {
   color: #82909e;
@@ -340,6 +524,8 @@ nav a:hover { color: #42f5a1; }
   font-size: 11px;
   padding: 12px;
 }
+
+/* PRICING */
 
 .pricing-grid {
   display: grid;
@@ -355,9 +541,16 @@ nav a:hover { color: #42f5a1; }
   border: 1px solid #303847;
   border-radius: 15px;
   background: #11151e;
+  transition: .25s;
 }
 
-.price-card.featured { border-color: #42f5a1; }
+.price-card:hover {
+  transform: translateY(-5px);
+}
+
+.price-card.featured {
+  border-color: var(--green);
+}
 
 .price-card h3 {
   margin: 12px 0;
@@ -367,13 +560,13 @@ nav a:hover { color: #42f5a1; }
 .price {
   font-size: 38px;
   font-weight: bold;
-  color: #42f5a1 !important;
+  color: var(--green) !important;
   margin: 15px 0;
 }
 
 .price span {
   font-size: 13px;
-  color: #aab2c0;
+  color: var(--muted);
   font-weight: normal;
 }
 
@@ -384,8 +577,16 @@ nav a:hover { color: #42f5a1; }
   font-size: 14px;
 }
 
-.price-card li { margin: 12px 0; }
-.price-card li::before { content: "✓ "; color: #42f5a1; }
+.price-card li {
+  margin: 12px 0;
+}
+
+.price-card li::before {
+  content: "✓ ";
+  color: var(--green);
+}
+
+/* FOOTER */
 
 footer {
   padding: 35px 8%;
@@ -396,21 +597,116 @@ footer {
   gap: 20px;
 }
 
-footer p { color: #82909e; font-size: 12px; }
+footer p {
+  color: #82909e;
+  font-size: 12px;
+}
+
+/* SCROLLBARS */
+
+.ai-sidebar #history-list::-webkit-scrollbar,
+.chat-messages::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ai-sidebar #history-list::-webkit-scrollbar-thumb,
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #35443e;
+  border-radius: 10px;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 900px) {
+  .ai-sidebar {
+    width: 220px;
+    min-width: 220px;
+  }
+
+  .section {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
 
 @media (max-width: 750px) {
-  .navbar { padding: 0 5%; }
-  nav { display: none; }
-  .hero { padding-top: 85px; }
-  .feature-grid, .pricing-grid { grid-template-columns: 1fr; }
-  .section { padding: 65px 6%; }
-  footer { flex-direction: column; text-align: center; }
+  .navbar {
+    padding: 0 5%;
+  }
+
+  nav {
+    display: none;
+  }
+
+  .hero {
+    padding-top: 85px;
+  }
+
+  .feature-grid,
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section {
+    padding: 65px 6%;
+  }
+
+  .ai-layout {
+    flex-direction: column;
+    margin: 15px auto;
+  }
+
+  .ai-sidebar {
+    width: 100%;
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ai-sidebar .logo {
+    margin-bottom: 15px;
+  }
+
+  .sidebar-bottom {
+    display: none;
+  }
+
+  .ai-sidebar #history-list {
+    max-height: 150px;
+  }
+
+  .ai-main .chat-messages {
+    min-height: 300px;
+  }
+
+  footer {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {
-  .chat-form { flex-wrap: wrap; }
-  .chat-form input { flex-basis: 100%; }
-  .chat-form button { width: 100%; }
-  .message { max-width: 95%; }
-}
+  .chat-form {
+    flex-wrap: wrap;
+  }
 
+  .chat-form input {
+    flex-basis: 100%;
+  }
+
+  .chat-form button {
+    width: 100%;
+  }
+
+  .message {
+    max-width: 95%;
+  }
+
+  .hero h1 {
+    letter-spacing: -1px;
+  }
+
+  .ai-topbar {
+    padding: 0 15px;
+  }
+}
