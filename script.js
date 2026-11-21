@@ -5,6 +5,9 @@ const chatForm = document.getElementById("chat-form");
 const chatInput = document.getElementById("chat-input");
 const chatMessages = document.getElementById("chat-messages");
 
+// Remember messages during this browser session.
+let conversationHistory = [];
+
 function addMessage(text, sender) {
   const message = document.createElement("div");
   message.className = "message " + sender;
@@ -17,7 +20,6 @@ chatForm.addEventListener("submit", async function(event) {
   event.preventDefault();
 
   const userText = chatInput.value.trim();
-
   if (!userText) return;
 
   addMessage(userText, "user");
@@ -36,11 +38,10 @@ chatForm.addEventListener("submit", async function(event) {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        message: userText
+        message: userText,
+        history: conversationHistory
       })
     });
 
@@ -53,15 +54,20 @@ chatForm.addEventListener("submit", async function(event) {
 
     addMessage(data.reply, "assistant");
 
-  } catch (error) {
-    loadingMessage.remove();
-
-    addMessage(
-      "Sorry! I couldn't connect to NEXAR AI. Please try again. (" +
-      error.message + ")",
-      "assistant"
+    conversationHistory.push(
+      { role: "user", text: userText },
+      { role: "model", text: data.reply }
     );
 
+    // Keep the most recent 20 messages.
+    conversationHistory = conversationHistory.slice(-20);
+
+  } catch (error) {
+    loadingMessage.remove();
+    addMessage(
+      "Sorry! I couldn't connect to NEXAR AI. " + error.message,
+      "assistant"
+    );
   } finally {
     chatInput.disabled = false;
     sendButton.disabled = false;
