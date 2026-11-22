@@ -24,8 +24,8 @@ let authMode = "login";
 
 function loadChats() {
   try {
-    const data = JSON.parse(localStorage.getItem("nexar_chats") || "[]");
-    return Array.isArray(data) ? data : [];
+    const saved = JSON.parse(localStorage.getItem("nexar_chats") || "[]");
+    return Array.isArray(saved) ? saved : [];
   } catch {
     return [];
   }
@@ -38,8 +38,10 @@ function saveChats() {
 // ---------------- AUTHENTICATION ----------------
 
 function openAuth(mode = "login") {
+  if (!authModal) return;
+
   authMode = mode;
-  authError.textContent = "";
+  if (authError) authError.textContent = "";
 
   $("auth-title").textContent =
     mode === "signup" ? "Create your account." : "Welcome back.";
@@ -69,54 +71,26 @@ function openAuth(mode = "login") {
 }
 
 function closeAuth() {
+  if (!authModal) return;
   authModal.classList.add("hidden");
-  authError.textContent = "";
+  if (authError) authError.textContent = "";
 }
 
-function showDashboard(user) {
-  landingPage.style.display = "none";
-  authModal.classList.add("hidden");
-  appPage.classList.remove("hidden");
-
-  $("user-name").textContent = user.name || "NEXAR User";
-  $("user-email").textContent = user.email || "Welcome";
-
-  const initial = (user.name || "N").charAt(0).toUpperCase();
-  $("user-avatar").textContent = initial;
-  $("topbar-avatar").textContent = initial;
-
-  createNewChat();
-  renderHistory();
-}
-
-function logout() {
-  if (!confirm("Are you sure you want to log out?")) return;
-
-  localStorage.removeItem("nexar_demo_user");
-
-  conversationHistory = [];
-  currentChatId = null;
-
-  appPage.classList.add("hidden");
-  landingPage.style.display = "";
-  closeAuth();
-
-  window.scrollTo(0, 0);
-}
-
-document.querySelectorAll("[data-open-auth]").forEach(button => {
-  button.addEventListener("click", () => {
-    openAuth(button.dataset.openAuth);
-  });
+// Event delegation also handles buttons created inside the popup.
+document.addEventListener("click", event => {
+  const button = event.target.closest("[data-open-auth]");
+  if (button) {
+    openAuth(button.dataset.openAuth || "login");
+  }
 });
 
-$("close-auth").addEventListener("click", closeAuth);
+$("close-auth")?.addEventListener("click", closeAuth);
 
-authModal.addEventListener("click", event => {
+authModal?.addEventListener("click", event => {
   if (event.target === authModal) closeAuth();
 });
 
-authForm.addEventListener("submit", event => {
+authForm?.addEventListener("submit", event => {
   event.preventDefault();
 
   const email = authEmail.value.trim();
@@ -133,11 +107,9 @@ authForm.addEventListener("submit", event => {
     return;
   }
 
-  // Demo login only. This is not secure real authentication.
+  // Demo login only. Real secure authentication is not connected.
   const user = {
-    name: authMode === "signup"
-      ? name
-      : (name || email.split("@")[0]),
+    name: authMode === "signup" ? name : (name || email.split("@")[0]),
     email
   };
 
@@ -146,14 +118,54 @@ authForm.addEventListener("submit", event => {
   showDashboard(user);
 });
 
-$("logout-button").addEventListener("click", logout);
+function showDashboard(user) {
+  if (landingPage) landingPage.style.display = "none";
+  closeAuth();
+
+  if (appPage) {
+    appPage.style.display = "";
+    appPage.classList.remove("hidden");
+  }
+
+  $("user-name").textContent = user.name || "NEXAR User";
+  $("user-email").textContent = user.email || "Welcome";
+
+  const initial = (user.name || "N").charAt(0).toUpperCase();
+
+  if ($("user-avatar")) $("user-avatar").textContent = initial;
+  if ($("topbar-avatar")) $("topbar-avatar").textContent = initial;
+
+  createNewChat();
+  renderHistory();
+}
+
+function logout() {
+  if (!confirm("Are you sure you want to log out?")) return;
+
+  localStorage.removeItem("nexar_demo_user");
+
+  conversationHistory = [];
+  currentChatId = null;
+
+  if (appPage) {
+    appPage.classList.add("hidden");
+    appPage.style.display = "none";
+  }
+
+  if (landingPage) landingPage.style.display = "";
+
+  closeAuth();
+  window.scrollTo(0, 0);
+}
+
+$("logout-button")?.addEventListener("click", logout);
 
 // ---------------- CHAT DISPLAY ----------------
 
-function addMessage(text, sender) {
+function addMessage(content, sender) {
   const element = document.createElement("div");
   element.className = "message " + sender;
-  element.textContent = text;
+  element.textContent = content;
 
   chatMessages.appendChild(element);
   chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -162,8 +174,11 @@ function addMessage(text, sender) {
 }
 
 function showWelcome() {
-  chatMessages.innerHTML = "";
-  welcomeScreen.classList.remove("hidden");
+  if (welcomeScreen) welcomeScreen.classList.remove("hidden");
+
+  if (chatMessages) {
+    chatMessages.innerHTML = "";
+  }
 }
 
 function createNewChat() {
@@ -177,11 +192,9 @@ function openChat(id) {
   if (!chat) return;
 
   currentChatId = id;
-  conversationHistory = Array.isArray(chat.messages)
-    ? chat.messages
-    : [];
+  conversationHistory = Array.isArray(chat.messages) ? chat.messages : [];
 
-  welcomeScreen.classList.add("hidden");
+  if (welcomeScreen) welcomeScreen.classList.add("hidden");
   chatMessages.innerHTML = "";
 
   conversationHistory.forEach(item => {
@@ -219,9 +232,7 @@ function saveCurrentChat() {
   let chat = chats.find(item => item.id === currentChatId);
 
   if (!chat) {
-    const first = conversationHistory.find(
-      item => item.role === "user"
-    );
+    const first = conversationHistory.find(item => item.role === "user");
 
     chat = {
       id: currentChatId,
@@ -241,7 +252,7 @@ function saveCurrentChat() {
 // ---------------- CLEAR HISTORY ----------------
 
 function clearChatHistory() {
-  if (!confirm("Delete ALL saved conversations? This cannot be undone.")) {
+  if (!confirm("Delete all saved NEXAR AI conversations? This cannot be undone.")) {
     return;
   }
 
@@ -255,86 +266,40 @@ function clearChatHistory() {
   showWelcome();
 }
 
-// Add a Clear History button to the existing sidebar.
 const historyHeading = document.querySelector(".history-heading");
 
-if (historyHeading) {
+if (historyHeading && !$("clear-history")) {
   const clearButton = document.createElement("button");
+  clearButton.id = "clear-history";
   clearButton.type = "button";
   clearButton.textContent = "Clear";
   clearButton.className = "history-clear-button";
   clearButton.title = "Clear all conversations";
   clearButton.addEventListener("click", clearChatHistory);
+
   historyHeading.appendChild(clearButton);
 }
 
-$("new-chat").addEventListener("click", createNewChat);
+$("clear-history")?.addEventListener("click", clearChatHistory);
 
-// ---------------- AI RESPONSE STREAMING ----------------
+$("new-chat")?.addEventListener("click", createNewChat);
 
-// Supports real SSE streaming when the Worker is upgraded.
-// Also supports the current JSON response from your Worker.
-async function readAIResponse(response, outputElement) {
-  const contentType = response.headers.get("content-type") || "";
+// ---------------- AI RESPONSE ----------------
 
-  if (contentType.includes("text/event-stream")) {
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = "";
-    let fullReply = "";
-
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-
-      const lines = buffer.split("\n");
-      buffer = lines.pop() || "";
-
-      for (const line of lines) {
-        if (!line.startsWith("data:")) continue;
-
-        const dataText = line.slice(5).trim();
-        if (!dataText || dataText === "[DONE]") continue;
-
-        try {
-          const data = JSON.parse(dataText);
-          const piece = data.choices?.[0]?.delta?.content || "";
-
-          if (piece) {
-            fullReply += piece;
-            outputElement.textContent = fullReply;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-          }
-        } catch {
-          // Ignore incomplete event data.
-        }
-      }
-    }
-
-    return fullReply;
-  }
-
-  const data = await response.json();
-  return data.reply || data.response || "";
-}
-
-// ---------------- SEND MESSAGE ----------------
-
-async function sendMessage(text) {
-  text = text.trim();
+async function sendMessage(userText) {
+  const text = userText.trim();
 
   if (!text || !chatInput || !chatMessages) return;
 
-  welcomeScreen.classList.add("hidden");
+  if (welcomeScreen) welcomeScreen.classList.add("hidden");
 
   addMessage(text, "user");
+
   chatInput.value = "";
   chatInput.disabled = true;
 
   const sendButton = $("send-button");
-  sendButton.disabled = true;
+  if (sendButton) sendButton.disabled = true;
 
   const output = addMessage("NEXAR AI is thinking...", "assistant");
 
@@ -357,18 +322,31 @@ async function sendMessage(text) {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+
       throw new Error(
-        errorData.error || errorData.message ||
+        errorData.error ||
+        errorData.message ||
         "Server error: " + response.status
       );
     }
 
+    const data = await response.json();
+    const reply = data.reply || data.response;
+
+    if (typeof reply !== "string" || !reply.trim()) {
+      throw new Error("The AI returned an empty response.");
+    }
+
     output.textContent = "";
 
-    const reply = await readAIResponse(response, output);
+    // Visual progressive display, not true server-side streaming.
+    for (let i = 0; i < reply.length; i++) {
+      output.textContent += reply[i];
 
-    if (!reply.trim()) {
-      throw new Error("The AI returned an empty response.");
+      if (i % 5 === 0) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        await new Promise(resolve => setTimeout(resolve, 8));
+      }
     }
 
     conversationHistory.push(
@@ -377,20 +355,23 @@ async function sendMessage(text) {
     );
 
     conversationHistory = conversationHistory.slice(-20);
+
     saveCurrentChat();
 
   } catch (error) {
     console.error("NEXAR AI error:", error);
+
     output.textContent =
       "Sorry! I couldn't connect to NEXAR AI. " + error.message;
+
   } finally {
     chatInput.disabled = false;
-    sendButton.disabled = false;
+    if (sendButton) sendButton.disabled = false;
     chatInput.focus();
   }
 }
 
-chatForm.addEventListener("submit", event => {
+chatForm?.addEventListener("submit", event => {
   event.preventDefault();
   sendMessage(chatInput.value);
 });
@@ -399,11 +380,15 @@ chatForm.addEventListener("submit", event => {
 
 document.querySelectorAll("[data-prompt]").forEach(button => {
   button.addEventListener("click", () => {
-    sendMessage(button.dataset.prompt);
+    const prompt = button.dataset.prompt;
+    if (prompt) sendMessage(prompt);
   });
 });
 
 // ---------------- INITIAL SETUP ----------------
 
 renderHistory();
-showWelcome();
+
+if (chatMessages) {
+  showWelcome();
+}
