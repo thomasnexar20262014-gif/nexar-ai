@@ -373,9 +373,11 @@ async function sendMessage(userText) {
       }
     }
 
-    if (!reply.trim()) {
-      throw new Error("The AI returned an empty response.");
-    }
+  if (typeof marked !== "undefined" && typeof DOMPurify !== "undefined") {
+  output.innerHTML = DOMPurify.sanitize(
+    marked.parse(reply)
+  );
+}
 
     conversationHistory.push(
       { role: "user", text },
