@@ -152,7 +152,61 @@ $("logout-button")?.addEventListener("click", logout);
 
 // CHAT DISPLAY
 
+function 
+function enhanceCodeBlocks(container) {
+  if (!container) return;
+
+  container.querySelectorAll("pre code").forEach(code => {
+    if (window.hljs && !code.dataset.highlighted) {
+      window.hljs.highlightElement(code);
+    }
+
+    const pre = code.closest("pre");
+    if (!pre || pre.querySelector(".code-copy")) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "code-copy";
+    button.textContent = "Copy";
+
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(code.innerText);
+        button.textContent = "Copied!";
+        setTimeout(() => button.textContent = "Copy", 1500);
+      } catch {
+        button.textContent = "Copy failed";
+      }
+    });
+
+    pre.appendChild(button);
+  });
+}
+
 function addMessage(content, sender) {
+  const element = document.createElement("div");
+  element.className = "message " + sender;
+
+  if (
+    sender === "assistant" &&
+    typeof marked !== "undefined" &&
+    typeof DOMPurify !== "undefined"
+  ) {
+    element.innerHTML = DOMPurify.sanitize(
+      marked.parse(content || "")
+    );
+
+    enhanceCodeBlocks(element);
+  } else {
+    element.textContent = content;
+  }
+
+  chatMessages.appendChild(element);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  return element;
+}
+ {
   const element = document.createElement("div");
   element.className = "message " + sender;
 
