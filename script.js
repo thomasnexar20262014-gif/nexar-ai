@@ -152,7 +152,8 @@ $("logout-button")?.addEventListener("click", logout);
 
 // CHAT DISPLAY
 
-function 
+// CODE HIGHLIGHTING AND COPY BUTTONS
+
 function enhanceCodeBlocks(container) {
   if (!container) return;
 
@@ -173,7 +174,10 @@ function enhanceCodeBlocks(container) {
       try {
         await navigator.clipboard.writeText(code.innerText);
         button.textContent = "Copied!";
-        setTimeout(() => button.textContent = "Copy", 1500);
+
+        setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
       } catch {
         button.textContent = "Copy failed";
       }
@@ -197,23 +201,6 @@ function addMessage(content, sender) {
     );
 
     enhanceCodeBlocks(element);
-  } else {
-    element.textContent = content;
-  }
-
-  chatMessages.appendChild(element);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-
-  return element;
-}
- {
-  const element = document.createElement("div");
-  element.className = "message " + sender;
-
-  if (sender === "assistant" && typeof marked !== "undefined" && typeof DOMPurify !== "undefined") {
-    element.innerHTML = DOMPurify.sanitize(
-      marked.parse(content || "")
-    );
   } else {
     element.textContent = content;
   }
@@ -362,6 +349,7 @@ async function sendMessage(userText) {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+
       throw new Error(
         errorData.error || "Server error: " + response.status
       );
@@ -427,11 +415,21 @@ async function sendMessage(userText) {
       }
     }
 
-  if (typeof marked !== "undefined" && typeof DOMPurify !== "undefined") {
-  output.innerHTML = DOMPurify.sanitize(
-    marked.parse(reply)
-  );
-}
+    if (!reply.trim()) {
+      throw new Error("The AI returned an empty response.");
+    }
+
+    if (
+      typeof marked !== "undefined" &&
+      typeof DOMPurify !== "undefined"
+    ) {
+      output.innerHTML = DOMPurify.sanitize(
+        marked.parse(reply)
+      );
+
+      // Apply syntax highlighting and copy buttons after streaming.
+      enhanceCodeBlocks(output);
+    }
 
     conversationHistory.push(
       { role: "user", text },
