@@ -73,9 +73,17 @@ function closeAuth() {
   if (authError) authError.textContent = "";
 }
 
+
 document.addEventListener("click", event => {
   const button = event.target.closest("[data-open-auth]");
-  if (button) openAuth(button.dataset.openAuth || "login");
+
+  if (!button) return;
+
+  event.preventDefault();
+
+  const mode = button.getAttribute("data-open-auth");
+
+  openAuth(mode || "login");
 });
 
 $("close-auth")?.addEventListener("click", closeAuth);
