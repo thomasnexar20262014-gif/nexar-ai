@@ -261,9 +261,16 @@ async function sendMessage(message) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        messages: conversationHistory
-      })
+     body: JSON.stringify({
+  message: message,
+  history: conversationHistory
+    .slice(0, -1)
+    .slice(-20)
+    .map(item => ({
+      role: item.role === "assistant" ? "model" : "user",
+      text: item.content
+    }))
+})
     });
 
     if (!response.ok) {
