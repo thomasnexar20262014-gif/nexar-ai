@@ -1,14 +1,16 @@
 
 const API_URL = "https://nexar-ai-backend.thomasnexar2026-2014.workers.dev/";
 
-// NEXAR AI page elements
 const chatForm = document.getElementById("chat-form");
 const chatInput = document.getElementById("chat-input");
 const chatMessages = document.getElementById("chat-messages");
 const historyList = document.getElementById("history-list");
 const newChatButton = document.getElementById("new-chat");
 
-// Safely load saved chats
+let chats = loadChats();
+let conversationHistory = [];
+let currentChatId = null;
+
 function loadChats() {
   try {
     const saved = JSON.parse(localStorage.getItem("nexar_chats") || "[]");
@@ -18,53 +20,24 @@ function loadChats() {
   }
 }
 
-let chats = loadChats();
-let conversationHistory = [];
-let currentChatId = null;
-
 function saveChats() {
   localStorage.setItem("nexar_chats", JSON.stringify(chats));
 }
 
-// Display a message
-function addMessage(text, sender) {
-  const message = document.createElement("div");
-  message.className = "message " + sender;
-  message.textContent = text;
-  chatMessages.appendChild(message);
+function addMessage(content, sender) {
+  const element = document.createElement("div");
+  element.className = "message " + sender;
+  element.textContent = content;
+  chatMessages.appendChild(element);
   chatMessages.scrollTop = chatMessages.scrollHeight;
-  return message;
+  return element;
 }
 
-// Welcome screen
 function showWelcome() {
   chatMessages.innerHTML = "";
-  addMessage(
-    "Hello! Welcome to NEXAR AI. What would you like to explore?",
-    "assistant"
-  );
+  addMessage("Hello! I'm NEXAR AI. What can I help you with today?", "assistant");
 }
 
-// Normalize old saved messages
-function normalizeHistory(messages) {
-  if (!Array.isArray(messages)) return [];
-
-  return messages
-    .filter(item =>
-      item &&
-      typeof item.text === "string" &&
-      item.text.trim() !== ""
-    )
-    .map(item => ({
-      role:
-        item.role === "assistant" || item.role === "model"
-          ? "model"
-          : "user",
-      text: item.text
-    }));
-}
-
-// Recent chat list
 function renderHistory() {
   if (!historyList) return;
 
@@ -72,173 +45,161 @@ function renderHistory() {
 
   chats.slice().reverse().forEach(chat => {
     const button = document.createElement("button");
-
-    button.textContent = chat.title || "New Chat";
     button.className = "history-item";
     button.type = "button";
-
+    button.textContent = chat.title || "New Chat";
     button.addEventListener("click", () => openChat(chat.id));
-
     historyList.appendChild(button);
   });
 }
 
-// Start a new conversation
 function createNewChat() {
   currentChatId = null;
   conversationHistory = [];
   showWelcome();
 }
 
-// Open an existing conversation
 function openChat(id) {
   const chat = chats.find(item => item.id === id);
   if (!chat) return;
 
   currentChatId = id;
-  conversationHistory = normalizeHistory(chat.messages);
-
+  conversationHistory = Array.isArray(chat.messages) ? chat.messages : [];
   chatMessages.innerHTML = "";
 
-  if (conversationHistory.length === 0) {
-    showWelcome();
-    return;
-  }
-
   conversationHistory.forEach(item => {
-    addMessage(
-      item.text,
-      item.role === "user" ? "user" : "assistant"
-    );
+    addMessage(item.text, item.role === "user" ? "user" : "assistant");
   });
 }
 
-// Save the current conversation
 function saveCurrentChat() {
-  if (conversationHistory.length === 0) return;
+  if (!conversationHistory.length) return;
 
-  if (!currentChatId) {
-    currentChatId = Date.now().toString();
-  }
+  if (!currentChatId) currentChatId = Date.now().toString();
 
   let chat = chats.find(item => item.id === currentChatId);
 
   if (!chat) {
-    const firstMessage = conversationHistory.find(
-      item => item.role === "user"
-    );
-
+    const first = conversationHistory.find(item => item.role === "user");
     chat = {
       id: currentChatId,
-      title: firstMessage
-        ? firstMessage.text.slice(0, 35)
-        : "New Chat",
+      title: first ? first.text.slice(0, 35) : "New Chat",
       messages: []
     };
-
     chats.push(chat);
   }
 
   chat.messages = [...conversationHistory];
-
   saveChats();
   renderHistory();
 }
 
-// Send a message to NEXAR AI
+function clearChatHistory() {
+  if (!confirm("Delete all saved NEXAR AI conversations? This cannot be undone.")) return;
+
+  chats = [];
+  conversationHistory = [];
+  currentChatId = null;
+
+  localStorage.removeItem("nexar_chats");
+
+  renderHistory();
+  showWelcome();
+}
+
+function logout() {
+  if (!confirm("Are you sure you want to log out?")) return;
+
+  localStorage.removeItem("nexar_demo_user");
+  conversationHistory = [];
+  currentChatId = null;
+
+  const appPage = document.getElementById("app-page");
+  const landingPage = document.getElementById("landing-page");
+
+  if (appPage) appPage.style.display = "none";
+  if (landingPage) landingPage.style.display = "block";
+
+  window.scrollTo(0, 0);
+}
+
 async function sendMessage(userText) {
   const text = userText.trim();
-
-  if (!text || !chatForm || !chatInput || !chatMessages) return;
+  if (!text || !chatInput || !chatMessages) return;
 
   addMessage(text, "user");
   chatInput.value = "";
   chatInput.disabled = true;
 
-  const sendButton = chatForm.querySelector('button[type="submit"]')
-    || chatForm.querySelector("button");
+  const sendButton = chatForm?.querySelector('button[type="submit"]')
+    || chatForm?.querySelector("button");
 
-  if (sendButton) {
-    sendButton.disabled = true;
-    sendButton.textContent = "Thinking...";
-  }
+  if (sendButton) sendButton.disabled = true;
 
-  const loadingMessage = addMessage(
-    "NEXAR AI is thinking...",
-    "assistant"
-  );
+  const responseElement = addMessage("", "assistant");
+  responseElement.textContent = "NEXAR AI is thinking...";
 
-  // Keep previous messages separate from the latest message
-  const previousHistory = normalizeHistory(conversationHistory)
-    .slice(-20);
+  const previousHistory = conversationHistory.slice(-20).map(item => ({
+    role: item.role === "assistant" ? "model" : item.role,
+    text: item.text
+  }));
 
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: text,
         history: previousHistory
       })
     });
 
-    const data = await response.json().catch(() => ({}));
-
     if (!response.ok) {
-      const details =
-        data.error ||
-        data.message ||
-        data.reply ||
-        "The server rejected the request.";
-
+      const errorData = await response.json().catch(() => ({}));
       throw new Error(
-        "Server error " + response.status + ": " + details
+        errorData.error || "Server error: " + response.status
       );
     }
 
+    const data = await response.json();
     const reply = data.reply || data.response;
 
     if (typeof reply !== "string" || !reply.trim()) {
-      throw new Error("The AI server returned an empty response.");
+      throw new Error("The AI returned an empty response.");
     }
 
-    loadingMessage.remove();
+    responseElement.textContent = "";
+
+    // Progressive display (visual streaming).
+    // The backend still returns the completed answer in one response.
+    for (let i = 0; i < reply.length; i++) {
+      responseElement.textContent += reply[i];
+
+      if (i % 5 === 0) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        await new Promise(resolve => setTimeout(resolve, 8));
+      }
+    }
 
     conversationHistory.push(
-      { role: "user", text: text },
-      { role: "model", text: reply }
+      { role: "user", text },
+      { role: "assistant", text: reply }
     );
 
     conversationHistory = conversationHistory.slice(-20);
-
-    addMessage(reply, "assistant");
     saveCurrentChat();
 
   } catch (error) {
-    loadingMessage.remove();
-
     console.error("NEXAR AI error:", error);
-
-    addMessage(
-      "Sorry! I couldn't connect to NEXAR AI. " + error.message,
-      "assistant"
-    );
-
+    responseElement.textContent =
+      "Sorry! I couldn't connect to NEXAR AI. " + error.message;
   } finally {
     chatInput.disabled = false;
-
-    if (sendButton) {
-      sendButton.disabled = false;
-      sendButton.textContent = "Send ↗";
-    }
-
+    if (sendButton) sendButton.disabled = false;
     chatInput.focus();
   }
 }
 
-// Form submission
 if (chatForm) {
   chatForm.addEventListener("submit", event => {
     event.preventDefault();
@@ -246,12 +207,10 @@ if (chatForm) {
   });
 }
 
-// New chat button
 if (newChatButton) {
   newChatButton.addEventListener("click", createNewChat);
 }
 
-// Suggested prompt buttons
 document.querySelectorAll("[data-prompt]").forEach(button => {
   button.addEventListener("click", () => {
     const prompt = button.getAttribute("data-prompt");
@@ -259,6 +218,9 @@ document.querySelectorAll("[data-prompt]").forEach(button => {
   });
 });
 
-// Initial setup
+// Connect Clear History and Logout controls by ID.
+document.getElementById("clear-history")?.addEventListener("click", clearChatHistory);
+document.getElementById("logout-button")?.addEventListener("click", logout);
+
 renderHistory();
 showWelcome();
