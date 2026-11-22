@@ -155,7 +155,14 @@ $("logout-button")?.addEventListener("click", logout);
 function addMessage(content, sender) {
   const element = document.createElement("div");
   element.className = "message " + sender;
-  element.textContent = content;
+
+  if (sender === "assistant" && typeof marked !== "undefined" && typeof DOMPurify !== "undefined") {
+    element.innerHTML = DOMPurify.sanitize(
+      marked.parse(content || "")
+    );
+  } else {
+    element.textContent = content;
+  }
 
   chatMessages.appendChild(element);
   chatMessages.scrollTop = chatMessages.scrollHeight;
